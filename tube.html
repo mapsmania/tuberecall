@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tube Recall</title>
+  <link href="https://unpkg.com/maplibre-gl@3.6.0/dist/maplibre-gl.css" rel="stylesheet" />
+ <link href="style.css" rel="stylesheet" />
+ 
+</head>
+<body>
+  <div id="map"></div>
+  <div class="overlay">
+      <input id="text_a" type="text" placeholder="TYPE A STATION NAME" />
+  </div>  
+    <div class="score">
+        </div> 
+
+  <!-- Load station data -->
+  <script src="https://mapsmania.github.io/tubememory/stations.js"></script>
+   <script src="tfllinesedited.js"></script>
+   
+  <!-- Load MapLibre -->
+  <script src="https://unpkg.com/maplibre-gl@3.6.0/dist/maplibre-gl.js"></script>
+ <script src="script.js"></script>
+
+ 
+</body>
+</html>
