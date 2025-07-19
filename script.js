@@ -74,7 +74,6 @@ function loadStationsFromStorage() {
   }
 }
 
-// Modified addStationLabel function to also save to storage
 function addStationLabel(stationName, coordinates) {
   if (!stationLabelsAdded) {
     // Create the labels layer if it doesn't exist
@@ -116,18 +115,53 @@ function addStationLabel(stationName, coordinates) {
         coordinates: coordinates
       }
     };
-    
+
     source._data.features.push(newFeature);
     map.getSource('station-labels').setData(source._data);
     labeledStations.add(stationName);
     updateScoreDisplay();
-
-    
-    // Save to localStorage whenever a new station is added
     saveStationsToStorage();
+
+    // Change station marker color to line color
+    const allLines = {
+      'waterloo-stations': waterlooLine,
+      'piccadilly-stations': piccadillyLine,
+      'northern-stations': northernLine,
+      'metropolitan-stations': metropolitanLine,
+      'hammersmith-stations': hammersmithLine,
+      'district-stations': districtLine,
+      'circle-stations': circleLine,
+      'bakerloo-stations': bakerlooLine,
+      'central-stations': centralLine,
+      'victoria-stations': victoriaLine,
+      'jubilee-stations': jubileeLine
+    };
+
+    Object.entries(allLines).forEach(([layerId, geojson]) => {
+      const found = geojson.features.find(f => f.properties.name === stationName);
+      if (found && map.getLayer(layerId)) {
+        // Derive line name from layer ID
+        const lineName = layerId
+          .replace('-stations', '')
+          .replace(/-/g, ' ')
+          .replace(/\b\w/g, l => l.toUpperCase());
+
+        const color = lineColors[lineName] || '#000000';
+
+        const originalPaint = map.getPaintProperty(layerId, 'circle-color');
+
+        map.setPaintProperty(layerId, 'circle-color', [
+          'case',
+          ['==', ['get', 'name'], stationName],
+          color,
+          originalPaint || '#ffffff'
+        ]);
+      }
+    });
   }
 }
-    map.on('load', () => {
+
+map.on('load', () => {
 
 map.addSource('tube-lines', {
     type: 'geojson',
@@ -177,7 +211,7 @@ map.addSource('tube-lines', {
     source: 'waterloo-line',
     paint: {
       'circle-radius': 4,
-      'circle-color': '#76D0BD', // Corporate Turquoise
+      'circle-color': '#ffffff', 
       'circle-stroke-width': 1,
       'circle-stroke-color': '#000'
     }
@@ -195,7 +229,7 @@ map.addSource('tube-lines', {
     source: 'piccadilly-line',
     paint: {
       'circle-radius': 4,
-      'circle-color': '#0019A8', // Piccadilly Blue
+      'circle-color': '#ffffff',
       'circle-stroke-width': 1,
       'circle-stroke-color': '#000'
     }
@@ -213,7 +247,7 @@ map.addSource('tube-lines', {
     source: 'northern-line',
     paint: {
       'circle-radius': 4,
-      'circle-color': '#000000', // Northern Line Black
+      'circle-color': '#ffffff',
       'circle-stroke-width': 1,
       'circle-stroke-color': '#000'
     }
@@ -231,7 +265,7 @@ map.addSource('tube-lines', {
     source: 'metropolitan-line',
     paint: {
       'circle-radius': 4,
-      'circle-color': '#9B0056', // Metropolitan Magenta
+      'circle-color': '#ffffff',
       'circle-stroke-width': 1,
       'circle-stroke-color': '#000'
     }
@@ -249,7 +283,7 @@ map.addSource('tube-lines', {
     source: 'hammersmith-line',
     paint: {
       'circle-radius': 4,
-      'circle-color': '#F4A9BE', // Hammersmith Pink
+      'circle-color': '#ffffff',
       'circle-stroke-width': 1,
       'circle-stroke-color': '#000'
     }
@@ -267,7 +301,7 @@ map.addSource('tube-lines', {
     source: 'district-line',
     paint: {
       'circle-radius': 4,
-      'circle-color': '#007D32', // District Green
+      'circle-color': '#ffffff',
       'circle-stroke-width': 1,
       'circle-stroke-color': '#000'
     }
@@ -285,7 +319,7 @@ map.addSource('tube-lines', {
     source: 'circle-line',
     paint: {
       'circle-radius': 4,
-      'circle-color': '#FFD329', // Circle Yellow
+      'circle-color': '#ffffff',
       'circle-stroke-width': 1,
       'circle-stroke-color': '#000'
     }
@@ -303,7 +337,7 @@ map.addSource('tube-lines', {
     source: 'bakerloo-line',
     paint: {
       'circle-radius': 4,
-      'circle-color': '#B26300', // Bakerloo Brown
+      'circle-color': '#ffffff',
       'circle-stroke-width': 1,
       'circle-stroke-color': '#000'
     }
@@ -321,7 +355,7 @@ map.addSource('tube-lines', {
     source: 'central-line',
     paint: {
       'circle-radius': 4,
-      'circle-color': '#E32017', // Central Red
+      'circle-color': '#ffffff',
       'circle-stroke-width': 1,
       'circle-stroke-color': '#000'
     }
@@ -339,7 +373,7 @@ map.addSource('tube-lines', {
     source: 'victoria-line',
     paint: {
       'circle-radius': 4,
-      'circle-color': '#0098D8', // Victoria Light Blue
+      'circle-color': '#ffffff',
       'circle-stroke-width': 1,
       'circle-stroke-color': '#000'
     }
@@ -357,7 +391,7 @@ map.addSource('tube-lines', {
     source: 'jubilee-line',
     paint: {
       'circle-radius': 4,
-      'circle-color': '#A0A5A9', // Jubilee Grey
+      'circle-color': '#ffffff',
       'circle-stroke-width': 1,
       'circle-stroke-color': '#000'
     }
